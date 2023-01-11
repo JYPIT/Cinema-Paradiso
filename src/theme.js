@@ -10,3 +10,5 @@ export const theme = {
     darker: "#e5e5e5",
   },
 };
+
+export const lightTheme = {};

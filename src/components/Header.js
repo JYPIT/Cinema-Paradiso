@@ -1,17 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { motion, useAnimation, useScroll } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: fixed;
+  top: 0;
   width: 100%;
   padding: 20px 60px;
   color: white;
-  background-color: ${(props) => props.theme.black.veryDark};
+  //background-color: ${(props) => props.theme.black.veryDark};
 `;
+
+const navVariants = {
+  top: { backgroundColor: "rgba(0,0,0,0)" },
+  scrollDown: { backgroundColor: "rgba(0,0,0,1)" },
+};
 
 const Col = styled.div`
   display: flex;
@@ -57,11 +65,30 @@ const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
+const Search = styled(motion.form)``;
 const Input = styled(motion.input)``;
 
 function Header() {
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm();
+  const onValid = (data) => {
+    navigate(`/search?keyword=${data.keyword}`);
+  };
+  const inputAnimation = useAnimation();
+  const navAnimation = useAnimation();
+  const { scrollY } = useScroll();
+  useEffect(() => {
+    scrollY.onChange(() => {
+      if (scrollY.get() > 80) {
+        navAnimation.start("scrollDown");
+      } else {
+        navAnimation.start("top");
+      }
+    });
+  }, [scrollY]);
+
   return (
-    <Nav>
+    <Nav variants={navVariants} initial={"top"} animate={navAnimation}>
       <Col>
         <StyledLink to="/">
           <Logo
@@ -77,17 +104,19 @@ function Header() {
           </Logo>
         </StyledLink>
         <Items>
-          <StyledLink to={"Detail"}>
-            <Item>Detail</Item>
-          </StyledLink>
-
           <Item>Dark Mode</Item>
           <Item>
             <StyledLink to={"Login"}>Login</StyledLink>
           </Item>
         </Items>
       </Col>
-      <Input type="text" placeholder="제목 입력" />
+      <Search onSubmit={handleSubmit(onValid)}>
+        <Input
+          {...register("keyword", { required: true, minLength: 2 })}
+          type="text"
+          placeholder="제목 입력..."
+        />
+      </Search>
     </Nav>
   );
 }

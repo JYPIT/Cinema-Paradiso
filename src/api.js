@@ -6,3 +6,9 @@ export function getMovies() {
     `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR`
   ).then((response) => response.json());
 }
+
+export function getSearch(keyword) {
+  return fetch(
+    `${BASE_PATH}/search/movie?api_key=${API_KEY}&language=ko-KR&query=${keyword}&page=1&include_adult=false`
+  ).then((response) => response.json());
+}
