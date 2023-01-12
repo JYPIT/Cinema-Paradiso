@@ -17,8 +17,8 @@ const LoginBox = styled.div`
   display: inherit;
   justify-content: center;
   align-items: center;
-  width: 60vw;
-  height: 30vh;
+  width: 500px;
+  height: 200px;
   border-radius: 15px;
   background-color: teal;
 `;
@@ -26,12 +26,16 @@ const LoginBox = styled.div`
 const LoginForm = styled.form`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const LoginInput = styled.input`
-  font-size: 50px;
   border-radius: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
+  width: 300px;
+  height: 30px;
+  text-align: center;
 `;
 
 function Login() {
@@ -41,7 +45,8 @@ function Login() {
       <LoginBox>
         <LoginForm action="">
           <LoginInput type="text" placeholder="ID" />
-          <LoginInput type="text" placeholder="Password" />
+          <LoginInput type="password" placeholder="Password" />
+          <button type="submit">Sign In</button>
         </LoginForm>
       </LoginBox>
     </Wrapper>
