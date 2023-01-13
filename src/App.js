@@ -8,11 +8,6 @@ import Shop from "./routes/Shop";
 import Join from "./routes/Join";
 
 function App() {
-  const selectAll = async () => {
-    console.log("SELECT *");
-    const result = await axios.get("/shop");
-    console.log(result);
-  };
   return (
     <BrowserRouter>
       <Header />
@@ -22,13 +17,8 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="search" element={<Search />} />
         <Route path="movies/:id" element={<Home />} />
-        <Route path="/*" element={<Home />} />
+        <Route path="/" element={<Home />} />
       </Routes>
-      <div id="App">
-        <button onClick={selectAll} style={{ fontSize: "50px" }}>
-          COME ON
-        </button>
-      </div>
     </BrowserRouter>
   );
 }
