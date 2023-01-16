@@ -3,23 +3,30 @@ import Header from "./components/Header";
 import Home from "./routes/Home";
 import Login from "./routes/Login";
 import Search from "./routes/Search";
-import axios from "axios";
-import Shop from "./routes/Shop";
 import Join from "./routes/Join";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "./atom";
+import { darkTheme, lightTheme } from "./theme";
+import { ThemeProvider } from "styled-components";
+import Profile from "./routes/Profile";
 
 function App() {
+  const isDark = useRecoilValue(isDarkAtom);
   return (
-    <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="shop" element={<Shop />} />
-        <Route path="join" element={<Join />} />
-        <Route path="login" element={<Login />} />
-        <Route path="search" element={<Search />} />
-        <Route path="movies/:id" element={<Home />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />}>
+            <Route path="movies/:id" element={<Home />} />
+          </Route>
+          <Route path="search" element={<Search />} />
+          <Route path="join" element={<Join />} />
+          <Route path="login" element={<Login />} />
+          <Route path="profile" element={<Profile />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

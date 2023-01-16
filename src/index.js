@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import App from "./App";
-import { theme } from "./theme";
+import { RecoilRoot } from "recoil";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -63,7 +63,7 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
   line-height: 1.2;
   background-color: black;
-  color:${(props) => props.theme.white.darker};
+  color:whitesmoke;
   
 }
 a {
@@ -76,12 +76,10 @@ const client = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <>
-    <ThemeProvider theme={theme}>
-      <QueryClientProvider client={client}>
-        <GlobalStyle />
-        <App />
-      </QueryClientProvider>
-    </ThemeProvider>
-  </>
+  <RecoilRoot>
+    <QueryClientProvider client={client}>
+      <GlobalStyle />
+      <App />
+    </QueryClientProvider>
+  </RecoilRoot>
 );

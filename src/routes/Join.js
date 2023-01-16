@@ -1,14 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { userDB } from "../atom";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80vh;
+  height: 100vh;
 `;
 const Title = styled.h1`
   font-size: 50px;
@@ -16,6 +18,7 @@ const Title = styled.h1`
 `;
 const JoinBox = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 500px;
@@ -28,6 +31,7 @@ const JoinForm = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 20px;
 `;
 
 const JoinInput = styled.input`
@@ -39,51 +43,65 @@ const JoinInput = styled.input`
 `;
 
 function Join() {
+  const user = useRecoilValue(userDB);
+  const setUser = useSetRecoilState(userDB);
   const {
     register,
-    watch,
     handleSubmit,
     formState: { errors }, // error를 보여주는 formState
     setError, //특정한 error를 발생시키는 trigger
   } = useForm();
-
+  const navigate = useNavigate();
   // 유효성 검사
   const onValid = (data) => {
     if (data.password !== data.password2) {
       setError("password2", { message: "비밀번호가 일치하지 않습니다." });
       return 0;
     }
-    console.log(JSON.stringify(data));
-    fetch("Join", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    //alert("회원가입 완료");
-  };
-  const callDB = async () => {
-    console.log("SELECT *");
-    const result = await axios.get("/db/cinemaUserDB");
-    console.log(result.data);
-  };
+    //TODO: MYSQL JOIN 부분
+    // axios
+    //   .post("/Join", data)
+    //   .then((res) => {
+    //     if (res.data.result === 0) {
+    //       alert(res.data.msg);
+    //       return 0;
+    //     }
+    //     alert(res.data2.msg);
+    //     navigate("/Login");
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
 
+    // fetch(
+    //   "Join",
+    //   {
+    //     method: "post",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(data),
+    //   }.then(alert("회원가입 완료."), navigate("/Login"))
+    // );
+    setUser({ ...data });
+    navigate("/Login");
+    console.log(user);
+  };
   return (
     <Wrapper>
       <Title>JOIN</Title>
       <JoinBox>
         <JoinForm onSubmit={handleSubmit(onValid)}>
           <JoinInput
-            {...register("nickname", {
-              required: "Nickname이 필요합니다.",
+            {...register("id", {
+              required: "ID가 필요합니다.",
               minLength: {
                 value: 3,
-                message: "Nickname은 최소 3자리부터 가능합니다.",
+                message: "ID는 최소 3자리부터 가능합니다.",
               },
             })}
             type="text"
-            placeholder="Nickname"
+            placeholder="ID"
           />
-          <span>{errors?.nickname?.message}</span>
+          <span>{errors?.id?.message}</span>
           <JoinInput
             {...register("email", { required: true })}
             type="email"
@@ -104,12 +122,14 @@ function Join() {
             placeholder="Confirm Password"
           />
           <span>{errors?.password2?.message}</span>
-          <input type="submit" value="Join" />
+          <input type="submit" value="등록" />
         </JoinForm>
+        <Link to={"/Login"} style={{ textAlign: "center" }}>
+          계정이 있으신가요?
+          <br />
+          지금 로그인하기 →
+        </Link>
       </JoinBox>
-      <button onClick={callDB} style={{ fontSize: "50px" }}>
-        Cinema User DB
-      </button>
     </Wrapper>
   );
 }
