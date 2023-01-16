@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { motion, useAnimation, useScroll } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { isDarkAtom, isLoginAtom } from "../atom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
@@ -72,19 +72,45 @@ const DarkThemeLogo = styled(motion.svg)`
   fill: orange;
 `;
 
-const Search = styled(motion.form)``;
-const Input = styled(motion.input)``;
+const Search = styled(motion.form)`
+  display: flex;
+  align-items: center;
+  position: relative;
+  svg {
+    height: 25px;
+  }
+`;
+const Input = styled(motion.input)`
+  position: absolute;
+  transform-origin: right center;
+  right: 0px;
+  padding: 5px 10px;
+  padding-left: 40px;
+  color: white;
+  font-size: 16px;
+  background-color: ${(props) => props.theme.black.lighter};
+  border: 1px solid ${(props) => props.theme.white.lighter};
+`;
 
 function Header() {
+  //Dark Mode
   const isDark = useRecoilValue(isDarkAtom);
   const setIsDark = useSetRecoilState(isDarkAtom);
+  const clickDarkBtn = () => {
+    setIsDark((prev) => !prev);
+  };
+  //Login
   const isLogin = useRecoilValue(isLoginAtom);
   const setIsLogin = useSetRecoilState(isLoginAtom);
   const navigate = useNavigate();
+  //Form
   const { register, handleSubmit } = useForm();
   const onValid = (data) => {
     navigate(`/search?keyword=${data.keyword}`);
   };
+  //Search
+  const [searchOpen, setSearchOpen] = useState(false);
+  const toggleSearch = () => setSearchOpen((prev) => !prev);
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useScroll();
@@ -134,7 +160,7 @@ function Header() {
               <Item onClick={() => setIsLogin(true)}>로그인</Item>
             </>
           )}
-          <Item onClick={() => setIsDark((prev) => !prev)}>
+          <Item onClick={clickDarkBtn}>
             {isDark ? (
               <DarkThemeLogo
                 fill="none"
@@ -171,16 +197,31 @@ function Header() {
           </Item>
         </Items>
       </Col>
-
-      <Search onSubmit={handleSubmit(onValid)}>
-        <Input
-          {...register("keyword", { required: true, minLength: 2 })}
-          type="text"
-          placeholder="제목 입력..."
-        />
-      </Search>
+      <Col>
+        <Search onSubmit={handleSubmit(onValid)}>
+          <motion.svg
+            onClick={toggleSearch}
+            animate={{ x: searchOpen ? -230 : 0 }}
+            transition={{ type: "linear" }}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clipRule="evenodd"
+            ></path>
+          </motion.svg>
+          <Input
+            {...register("keyword", { required: true, minLength: 2 })}
+            animate={{ scaleX: searchOpen ? 1 : 0 }}
+            transition={{ type: "linear" }}
+            placeholder="제목 입력..."
+          />
+        </Search>
+      </Col>
     </Nav>
   );
 }
-
 export default Header;

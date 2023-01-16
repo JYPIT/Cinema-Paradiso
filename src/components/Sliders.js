@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { makeImagePath } from "../utils";
+import { makeImagePath, makeRatings } from "../utils";
 
 // Slider
 const Slider = styled(motion.div)`
@@ -24,9 +24,11 @@ const SliderBtn = styled.div`
   right: ${(props) => (props.isRight ? 0 : null)};
   left: ${(props) => (props.isRight ? null : 0)};
   display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 50px;
-  height: 40px;
+  height: 350px;
   width: 40px;
   cursor: pointer;
   svg {
@@ -95,20 +97,26 @@ const PopMovie = styled(motion.div)`
 
 const PopMovieCover = styled.div`
   width: 100%;
-  height: 250px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
   background-size: cover;
   background-position: center center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8)),
+  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgphoto});
 `;
 const PopMovieTitle = styled.h3`
-  margin-top: 30px;
-  text-align: center;
+  position: absolute;
+  top: 250px;
   font-size: 36px;
 `;
 const PopMovieOverview = styled.p`
   padding: 20px 40px;
   font-size: 18px;
+  svg {
+    width: 30px;
+    height: 30px;
+  }
 `;
 
 const offset = 6;
@@ -116,79 +124,79 @@ const offset = 6;
 const genres = [
   {
     id: 28,
-    name: "Action",
+    name: "액션",
   },
   {
     id: 12,
-    name: "Adventure",
+    name: "모험",
   },
   {
     id: 16,
-    name: "Animation",
+    name: "애니메이션",
   },
   {
     id: 35,
-    name: "Comedy",
+    name: "코미디",
   },
   {
     id: 80,
-    name: "Crime",
+    name: "범죄",
   },
   {
     id: 99,
-    name: "Documentary",
+    name: "다큐멘터리",
   },
   {
     id: 18,
-    name: "Drama",
+    name: "드라마",
   },
   {
     id: 10751,
-    name: "Family",
+    name: "가족",
   },
   {
     id: 14,
-    name: "Fantasy",
+    name: "판타지",
   },
   {
     id: 36,
-    name: "History",
+    name: "역사",
   },
   {
     id: 27,
-    name: "Horror",
+    name: "공포",
   },
   {
     id: 10402,
-    name: "Music",
+    name: "음악",
   },
   {
     id: 9648,
-    name: "Mystery",
+    name: "미스터리",
   },
   {
     id: 10749,
-    name: "Romance",
+    name: "로맨스",
   },
   {
     id: 878,
-    name: "Science Fiction",
+    name: "SF",
   },
   {
     id: 10770,
-    name: "TV Movie",
+    name: "TV 영화",
   },
   {
     id: 53,
-    name: "Thriller",
+    name: "스릴러",
   },
   {
     id: 10752,
-    name: "War",
+    name: "전쟁",
   },
   {
     id: 37,
-    name: "Western",
+    name: "서부",
   },
 ];
 
@@ -230,6 +238,7 @@ function Sliders(movies) {
   const onOverlayClicked = () => {
     navigate("/");
   };
+  //console.log(movies.data.results);
 
   return (
     <>
@@ -293,10 +302,27 @@ function Sliders(movies) {
                       clickedMovie.backdrop_path || "",
                       "w500"
                     )}
-                  ></PopMovieCover>
-                  <PopMovieTitle>{clickedMovie.title}</PopMovieTitle>
+                  >
+                    <PopMovieTitle>{clickedMovie.title}</PopMovieTitle>
+                  </PopMovieCover>
+                  <PopMovieOverview>
+                    {clickedMovie.release_date.split("-").slice(0, 1)}
+                  </PopMovieOverview>
+                  <PopMovieOverview>
+                    {makeRatings(clickedMovie.vote_average)}
+                    {clickedMovie.vote_average / 2}
+                  </PopMovieOverview>
+                  <PopMovieOverview>
+                    장르:{" "}
+                    {clickedMovie.genre_ids.map((genreId) =>
+                      genres.map((genre) =>
+                        genreId === genre.id ? (
+                          <span key={genre.id}>{genre.name}, </span>
+                        ) : null
+                      )
+                    )}
+                  </PopMovieOverview>
                   <PopMovieOverview>{clickedMovie.overview}</PopMovieOverview>
-                  <PopMovieOverview></PopMovieOverview>
                 </>
               )}
             </PopMovie>

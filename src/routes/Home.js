@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import styled from "styled-components";
 import { getMovies } from "../api";
 import Sliders from "../components/Sliders";
@@ -47,11 +48,11 @@ function Home() {
             <Overview>{data.results[BannerId].overview}</Overview>
           </Banner>
           <Sliders data={data} />
-          <Sliders data={data} />
+          {/* <Sliders data={data} /> */}
         </Wrapper>
       )}
     </div>
   );
 }
 
-export default Home;
+export default React.memo(Home);
