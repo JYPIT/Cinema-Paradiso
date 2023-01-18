@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export function makeImagePath(id, format) {
   return `https://image.tmdb.org/t/p/${format ? format : "original"}${id}`;
 }
@@ -11,7 +9,6 @@ export function makeRatings(rating) {
   for (var i = 0; i < Math.floor(star); i++) {
     starArray.push(i);
   }
-
   return (
     <>
       {starArray.map((data) => (
@@ -37,3 +34,10 @@ export function makeRatings(rating) {
     </>
   );
 }
+
+export const Types = {
+  now_playing: "now_playing",
+  popular: "popular",
+  top_rated: "top_rated",
+  upcoming: "upcoming",
+};

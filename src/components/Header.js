@@ -13,7 +13,7 @@ const Nav = styled(motion.nav)`
   position: fixed;
   top: 0;
   width: 100%;
-  padding: 20px 60px;
+  padding: 20px 10px 20px 30px;
   color: white;
 `;
 
@@ -76,6 +76,7 @@ const Search = styled(motion.form)`
   display: flex;
   align-items: center;
   position: relative;
+  margin-right: 20px;
   svg {
     height: 25px;
   }
@@ -91,7 +92,13 @@ const Input = styled(motion.input)`
   background-color: ${(props) => props.theme.black.lighter};
   border: 1px solid ${(props) => props.theme.white.lighter};
 `;
-
+const ProfileLink = styled(Link)`
+  svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 30px;
+  }
+`;
 function Header() {
   //Dark Mode
   const isDark = useRecoilValue(isDarkAtom);
@@ -144,10 +151,10 @@ function Header() {
         <Items>
           {isLogin ? (
             <>
-              <Item>
-                <StyledLink to={"Profile"}>사용자</StyledLink>
-              </Item>
               <Item onClick={() => setIsLogin(false)}>로그아웃</Item>
+              <Item>
+                <StyledLink to={"123/RequestBoard"}>요청 게시판</StyledLink>
+              </Item>
             </>
           ) : (
             <>
@@ -218,8 +225,20 @@ function Header() {
             animate={{ scaleX: searchOpen ? 1 : 0 }}
             transition={{ type: "linear" }}
             placeholder="제목 입력..."
+            //animation={inputAnimation}
           />
         </Search>
+        {isLogin ? (
+          <ProfileLink to={"Profile"}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              fill="white"
+            >
+              <path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0S96 57.3 96 128s57.3 128 128 128zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
+            </svg>
+          </ProfileLink>
+        ) : null}
       </Col>
     </Nav>
   );

@@ -8,7 +8,8 @@ import { makeImagePath, makeRatings } from "../utils";
 const Slider = styled(motion.div)`
   position: relative;
   height: 300px;
-  margin: 30px 20px;
+  margin: 0px 20px;
+  margin-bottom: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,7 +18,7 @@ const SliderTitle = styled.h1`
   display: flex;
   position: relative;
   font-size: 30px;
-  margin: 0 20px;
+  margin: 0px 10px;
 `;
 const SliderBtn = styled.div`
   position: absolute;
@@ -27,9 +28,9 @@ const SliderBtn = styled.div`
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 50px;
-  height: 350px;
+  height: 300px;
   width: 40px;
+  margin: 0;
   cursor: pointer;
   svg {
     width: 40px;
@@ -200,7 +201,8 @@ const genres = [
   },
 ];
 
-function Sliders(movies) {
+export function Sliders({ data, sliderTitle }) {
+  console.log(data);
   const navigate = useNavigate();
   const movieMatch = useMatch("/movies/:movieId");
   const [index, setIndex] = useState(0);
@@ -208,41 +210,37 @@ function Sliders(movies) {
   const [isLeft, setIsLeft] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const moveRightIndex = async () => {
-    if (movies.data) {
+    if (data) {
       if (leaving) return;
       await setIsLeft(false);
       toggleLeaving();
-      const totalMovie = movies.data.results.length;
+      const totalMovie = data.results.length;
       const maxIndex = Math.ceil(totalMovie / offset) - 1;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
   const moveLeftIndex = async () => {
-    if (movies.data) {
+    if (data) {
       if (leaving) return;
       await setIsLeft(true);
       toggleLeaving();
-      const totalMovie = movies.data.results.length;
+      const totalMovie = data.results.length;
       const maxIndex = Math.ceil(totalMovie / offset) - 1;
       setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
     }
   };
   const clickedMovie =
     movieMatch?.params.movieId &&
-    movies.data?.results.find(
-      (movie) => movie.id + "" === movieMatch.params.movieId
-    );
+    data?.results.find((movie) => movie.id + "" === movieMatch.params.movieId);
   const onBoxClicked = (movieId) => {
     navigate(`/movies/${movieId}`);
   };
   const onOverlayClicked = () => {
     navigate("/");
   };
-  //console.log(movies.data.results);
-
   return (
     <>
-      <SliderTitle>Now Playing</SliderTitle>
+      <SliderTitle>{sliderTitle}</SliderTitle>
       <Slider>
         <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
           <Row
@@ -253,7 +251,7 @@ function Sliders(movies) {
             exit="exit"
             transition={{ type: "tween", duration: "1" }}
           >
-            {movies.data.results
+            {data.results
               .slice(offset * index, offset * index + offset)
               .map((movie) => (
                 <Box
@@ -285,7 +283,6 @@ function Sliders(movies) {
           </svg>
         </SliderBtn>
       </Slider>
-
       <AnimatePresence>
         {movieMatch ? (
           <>
@@ -306,18 +303,18 @@ function Sliders(movies) {
                     <PopMovieTitle>{clickedMovie.title}</PopMovieTitle>
                   </PopMovieCover>
                   <PopMovieOverview>
-                    {clickedMovie.release_date.split("-").slice(0, 1)}
+                    {makeRatings(clickedMovie.vote_average)}(
+                    {(clickedMovie.vote_average / 2).toFixed(1)}/5)
                   </PopMovieOverview>
                   <PopMovieOverview>
-                    {makeRatings(clickedMovie.vote_average)}
-                    {clickedMovie.vote_average / 2}
+                    개봉일: {clickedMovie.release_date}
                   </PopMovieOverview>
                   <PopMovieOverview>
                     장르:{" "}
                     {clickedMovie.genre_ids.map((genreId) =>
                       genres.map((genre) =>
                         genreId === genre.id ? (
-                          <span key={genre.id}>{genre.name}, </span>
+                          <span key={genre.id}>[{genre.name}] </span>
                         ) : null
                       )
                     )}
@@ -332,4 +329,3 @@ function Sliders(movies) {
     </>
   );
 }
-export default Sliders;

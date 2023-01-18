@@ -9,6 +9,7 @@ import { isDarkAtom } from "./atom";
 import { darkTheme, lightTheme } from "./theme";
 import { ThemeProvider } from "styled-components";
 import Profile from "./routes/Profile";
+import RequestBoard from "./routes/RequestBoard";
 
 function App() {
   const isDark = useRecoilValue(isDarkAtom);
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<Home />}>
             <Route path="movies/:id" element={<Home />} />
           </Route>
+          <Route path=":userId/requestBoard" element={<RequestBoard />}></Route>
           <Route path="search" element={<Search />} />
           <Route path="join" element={<Join />} />
           <Route path="login" element={<Login />} />
